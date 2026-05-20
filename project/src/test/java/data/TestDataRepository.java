@@ -5,12 +5,12 @@ import com.example.testfx.model.AccidentTravail;
 import org.apache.poi.EmptyFileException;
 import org.apache.poi.openxml4j.exceptions.NotOfficeXmlFileException;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -18,6 +18,9 @@ import java.util.TreeMap;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import org.junit.jupiter.api.io.TempDir;
+import java.nio.file.Path;
+import java.nio.file.Files;
 
 /**
  * Permet de tester les méthodes de la classe DataRepository
@@ -192,10 +195,12 @@ public class TestDataRepository {
     }
 
     @Test
-    public void test_chargerDossier_OK(){
+    public void test_chargerDossier_OK(@TempDir Path tempDir) throws IOException {
+        Files.createFile(tempDir.resolve("2025.xlsx"));
+
         assertThrowsExactly(EmptyFileException.class, () -> {
-                nonCharge.chargerDossier("src/test/resources");
-            });
+            nonCharge.chargerDossier(tempDir.toString());
+        });
     }
 
     @Test
